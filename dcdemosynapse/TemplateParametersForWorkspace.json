@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "dcdemosynapse"
+		},
+		"GitHub1_credential": {
+			"value": ""
+		},
+		"asacosmosdb01_connectionString": {
+			"value": ""
+		},
+		"dcdemosynapse-WorkspaceDefaultSqlServer_connectionString": {
+			"value": ""
+		},
+		"GitHub1_properties_typeProperties_username": {
+			"value": "github@davecatt.co.uk"
+		},
+		"dcdemosynapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://dcgen2datalake.dfs.core.windows.net"
+		}
+	}
+}
