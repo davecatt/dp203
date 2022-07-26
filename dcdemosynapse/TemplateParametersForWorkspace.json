@@ -5,6 +5,15 @@
 		"workspaceName": {
 			"value": "dcdemosynapse"
 		},
+		"CosmosDb1_connectionString": {
+			"value": ""
+		},
+		"CosmosDb2_connectionString": {
+			"value": ""
+		},
+		"Davescosmos_connectionString": {
+			"value": ""
+		},
 		"GitHub1_credential": {
 			"value": ""
 		},
@@ -14,11 +23,20 @@
 		"dcdemosynapse-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
 		},
+		"jul25dlake_accountKey": {
+			"value": ""
+		},
+		"jul25databricks_accessToken": {
+			"value": ""
+		},
 		"GitHub1_properties_typeProperties_username": {
 			"value": "github@davecatt.co.uk"
 		},
 		"dcdemosynapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://dcgen2datalake.dfs.core.windows.net"
+		},
+		"jul25dlake_properties_typeProperties_url": {
+			"value": "https://jul25datalake.dfs.core.windows.net/"
 		}
 	}
 }
