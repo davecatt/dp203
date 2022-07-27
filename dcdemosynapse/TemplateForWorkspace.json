@@ -7,14 +7,6 @@
 			"metadata": "Workspace name",
 			"defaultValue": "dcdemosynapse"
 		},
-		"CosmosDb1_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'CosmosDb1'"
-		},
-		"CosmosDb2_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'CosmosDb2'"
-		},
 		"Davescosmos_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Davescosmos'"
@@ -31,13 +23,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'dcdemosynapse-WorkspaceDefaultSqlServer'"
 		},
+		"jul25databricks_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'jul25databricks'"
+		},
 		"jul25dlake_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'jul25dlake'"
 		},
-		"jul25databricks_accessToken": {
+		"Jul25Cosmos_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'accessToken' of 'jul25databricks'"
+			"metadata": "Secure string for 'connectionString' of 'Jul25Cosmos'"
 		},
 		"GitHub1_properties_typeProperties_username": {
 			"type": "string",
@@ -56,6 +52,54 @@
 		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('workspaceName'), '/Pipeline 2')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Notebook1",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/MyFirstNotebook",
+							"baseParameters": {
+								"input": {
+									"value": "@pipeline().parameters.department",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "jul25databricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"Department": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/jul25databricks')]"
+			]
+		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/asal400_customerprofile_cosmosdb')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
@@ -138,44 +182,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/dcdemosynapse-WorkspaceDefaultStorage')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/CosmosDb1')]",
-			"type": "Microsoft.Synapse/workspaces/linkedServices",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": [],
-				"type": "CosmosDb",
-				"typeProperties": {
-					"connectionString": "[parameters('CosmosDb1_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/CosmosDb2')]",
-			"type": "Microsoft.Synapse/workspaces/linkedServices",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": [],
-				"type": "CosmosDb",
-				"typeProperties": {
-					"connectionString": "[parameters('CosmosDb2_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
 			]
 		},
 		{
@@ -273,6 +279,34 @@
 				"type": "AzureBlobFS",
 				"typeProperties": {
 					"url": "[parameters('dcdemosynapse-WorkspaceDefaultStorage_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/jul25databricks')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-8831744433384471.11.azuredatabricks.net",
+					"accessToken": {
+						"type": "SecureString",
+						"value": "[parameters('jul25databricks_accessToken')]"
+					},
+					"newClusterNodeType": "Standard_DS3_v2",
+					"newClusterNumOfWorker": "1",
+					"newClusterVersion": "10.3.x-scala2.12",
+					"newClusterInitScripts": [],
+					"clusterOption": "Fixed"
 				},
 				"connectVia": {
 					"referenceName": "AutoResolveIntegrationRuntime",
@@ -449,68 +483,14 @@
 			"location": "uksouth"
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Pipeline 2')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "Notebook1",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/MyFirstNotebook",
-							"baseParameters": {
-								"input": "@pipeline().parameters.department"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "jul25databricks",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"Department": {
-						"type": "string"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/jul25databricks')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/jul25databricks')]",
+			"name": "[concat(parameters('workspaceName'), '/Jul25Cosmos')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"annotations": [],
-				"type": "AzureDatabricks",
+				"type": "CosmosDb",
 				"typeProperties": {
-					"domain": "https://adb-8831744433384471.11.azuredatabricks.net",
-					"accessToken": {
-						"type": "SecureString",
-						"value": "[parameters('jul25databricks_accessToken')]"
-					},
-					"newClusterNodeType": "Standard_DS3_v2",
-					"newClusterNumOfWorker": "1",
-					"newClusterVersion": "10.3.x-scala2.12",
-					"newClusterInitScripts": [],
-					"clusterOption": "Fixed"
+					"connectionString": "[parameters('Jul25Cosmos_connectionString')]"
 				},
 				"connectVia": {
 					"referenceName": "AutoResolveIntegrationRuntime",
