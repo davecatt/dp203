@@ -1,0 +1,88 @@
+{
+	"name": "TransformMovieData",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "MoviesStaging",
+						"type": "DatasetReference"
+					},
+					"name": "MoviesStaging"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "MoviesDW",
+						"type": "DatasetReference"
+					},
+					"name": "MoviesDW"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AdjustColumns"
+				},
+				{
+					"name": "RemoveYears"
+				},
+				{
+					"name": "PrimaryGenre"
+				},
+				{
+					"name": "RankMovies"
+				},
+				{
+					"name": "GroupByGenreandYear"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          movie as string,",
+				"          title as string,",
+				"          genres as string,",
+				"          year as string,",
+				"          Rating as string,",
+				"          {Rotton Tomato} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> MoviesStaging",
+				"MoviesStaging select(mapColumn(",
+				"          movie,",
+				"          title,",
+				"          genres,",
+				"          year,",
+				"          {Rotten Tomato} = {Rotton Tomato}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> AdjustColumns",
+				"AdjustColumns filter(toInteger(year)>1950) ~> RemoveYears",
+				"RemoveYears derive(PrimaryGenre = iif(locate(\"|\",genres)>1, left(genres,locate(\"|\",genres)-1), genres)) ~> PrimaryGenre",
+				"PrimaryGenre window(over(PrimaryGenre,",
+				"          year),",
+				"     desc({Rotten Tomato}, true),",
+				"     RatingsRank = rank()) ~> RankMovies",
+				"RankMovies aggregate(groupBy(PrimaryGenre,",
+				"          year),",
+				"     AverageRating = avg(toInteger({Rotten Tomato})),",
+				"          HighestRating = first(title),",
+				"          LowestRating = last(title),",
+				"          NumberOfMovies = count()) ~> GroupByGenreandYear",
+				"GroupByGenreandYear sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     staged: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> MoviesDW"
+			]
+		}
+	}
+}

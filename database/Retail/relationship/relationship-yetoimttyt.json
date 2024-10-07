@@ -1,0 +1,29 @@
+{
+	"name": "relationship-yetoimttyt",
+	"properties": {
+		"Name": "relationship-yetoimttyt",
+		"EntityType": "RELATIONSHIP",
+		"Namespace": {
+			"DatabaseName": "Retail"
+		},
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"FromTableName": "Transaction",
+		"ToTableName": "TransactionLineItem",
+		"ColumnRelationshipInformations": [
+			{
+				"FromColumnName": "TransactionId",
+				"ToColumnName": "TransactionId"
+			}
+		],
+		"RelationshipType": 0,
+		"Properties": {
+			"DerivedModelRelationshipInfo": "{\"baseRelationship\":{\"fromEntity\":\"Transaction.cdm.json/Transaction\",\"toEntity\":\"TransactionLineItem.cdm.json/TransactionLineItem\",\"joinPairs\":[{\"fromAttribute\":\"TransactionId\",\"toAttribute\":\"TransactionId\"}]}}"
+		},
+		"PublishStatus": "PUBLISHED",
+		"ObjectVersion": 1,
+		"ObjectId": "4cea3688-2be3-4086-96d3-92141bfe7032"
+	},
+	"type": "RELATIONSHIP"
+}

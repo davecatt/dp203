@@ -1,0 +1,29 @@
+{
+	"name": "relationship-igignvbpex",
+	"properties": {
+		"Name": "relationship-igignvbpex",
+		"EntityType": "RELATIONSHIP",
+		"Namespace": {
+			"DatabaseName": "Retail"
+		},
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"FromTableName": "RetailProduct",
+		"ToTableName": "TransactionLineItem",
+		"ColumnRelationshipInformations": [
+			{
+				"FromColumnName": "ProductId",
+				"ToColumnName": "ProductId"
+			}
+		],
+		"RelationshipType": 0,
+		"Properties": {
+			"DerivedModelRelationshipInfo": "{\"baseRelationship\":{\"fromEntity\":\"RetailProduct.cdm.json/RetailProduct\",\"toEntity\":\"TransactionLineItem.cdm.json/TransactionLineItem\",\"joinPairs\":[{\"fromAttribute\":\"ProductId\",\"toAttribute\":\"ProductId\"}]}}"
+		},
+		"PublishStatus": "PUBLISHED",
+		"ObjectVersion": 1,
+		"ObjectId": "15093c30-3283-49c9-8fb4-806373851474"
+	},
+	"type": "RELATIONSHIP"
+}

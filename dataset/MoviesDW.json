@@ -1,0 +1,17 @@
+{
+	"name": "MoviesDW",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SynapseSQLPool1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Movies"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

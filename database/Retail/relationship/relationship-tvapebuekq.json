@@ -1,0 +1,29 @@
+{
+	"name": "relationship-tvapebuekq",
+	"properties": {
+		"Name": "relationship-tvapebuekq",
+		"EntityType": "RELATIONSHIP",
+		"Namespace": {
+			"DatabaseName": "Retail"
+		},
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"FromTableName": "Customer",
+		"ToTableName": "Transaction",
+		"ColumnRelationshipInformations": [
+			{
+				"FromColumnName": "CustomerId",
+				"ToColumnName": "CustomerId"
+			}
+		],
+		"RelationshipType": 0,
+		"Properties": {
+			"DerivedModelRelationshipInfo": "{\"baseRelationship\":{\"fromEntity\":\"Customer.cdm.json/Customer\",\"toEntity\":\"Transaction.cdm.json/Transaction\",\"joinPairs\":[{\"fromAttribute\":\"CustomerId\",\"toAttribute\":\"CustomerId\"}]}}"
+		},
+		"PublishStatus": "PUBLISHED",
+		"ObjectVersion": 1,
+		"ObjectId": "8aed24b2-57bb-4fa1-ae67-752388703b73"
+	},
+	"type": "RELATIONSHIP"
+}

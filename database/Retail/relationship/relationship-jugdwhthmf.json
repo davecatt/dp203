@@ -1,0 +1,29 @@
+{
+	"name": "relationship-jugdwhthmf",
+	"properties": {
+		"Name": "relationship-jugdwhthmf",
+		"EntityType": "RELATIONSHIP",
+		"Namespace": {
+			"DatabaseName": "Retail"
+		},
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"FromTableName": "Transaction",
+		"ToTableName": "TransactionLineItem",
+		"ColumnRelationshipInformations": [
+			{
+				"FromColumnName": "TransactionId",
+				"ToColumnName": "ReturnOfTransactionId"
+			}
+		],
+		"RelationshipType": 0,
+		"Properties": {
+			"DerivedModelRelationshipInfo": "{\"baseRelationship\":{\"fromEntity\":\"Transaction.cdm.json/Transaction\",\"toEntity\":\"TransactionLineItem.cdm.json/TransactionLineItem\",\"joinPairs\":[{\"fromAttribute\":\"TransactionId\",\"toAttribute\":\"ReturnOfTransactionId\"}]}}"
+		},
+		"PublishStatus": "PUBLISHED",
+		"ObjectVersion": 1,
+		"ObjectId": "ff85be95-8f96-497d-a64c-7d12c48c6d15"
+	},
+	"type": "RELATIONSHIP"
+}

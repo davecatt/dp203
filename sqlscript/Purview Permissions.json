@@ -1,0 +1,17 @@
+{
+	"name": "Purview Permissions",
+	"properties": {
+		"content": {
+			"query": "/*  Run this against the Built-in Pool */\n \n CREATE LOGIN WoSPurview FROM EXTERNAL PROVIDER;\n GO\n CREATE USER WoSPurview FOR LOGIN WoSPurview;\n GO\n ALTER ROLE db_datareader ADD MEMBER WoSPurview;\n GO\n\n /*  Run this against each dedicated SQL Pool */\n\n CREATE USER WoSPurview FROM EXTERNAL PROVIDER;\n GO\n EXEC sp_addrolemember 'db_datareader', WoSPurview;\n GO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

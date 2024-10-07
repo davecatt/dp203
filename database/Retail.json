@@ -1,0 +1,26 @@
+{
+	"name": "Retail",
+	"properties": {
+		"Name": "Retail",
+		"EntityType": "DATABASE",
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"Properties": {
+			"IsSyMSCDMDatabase": true,
+			"DerivedModelDBInfo": "{\"ModelDirectives\":{\"BaseModel\":{\"Name\":\"Retail\",\"Version\":\"1.3.0\"}}}"
+		},
+		"Source": {
+			"Provider": "ADLS",
+			"Location": "abfss://synapse@wosdatalakedemo.dfs.core.windows.net/Retail-lake-database",
+			"Properties": {
+				"FormatType": "parquet",
+				"LinkedServiceName": "WoSDatalake"
+			}
+		},
+		"PublishStatus": "PUBLISHED",
+		"ObjectVersion": 2,
+		"ObjectId": "c6055da5-1a63-4a26-8c97-08d76a8d7c50"
+	},
+	"type": "DATABASE"
+}

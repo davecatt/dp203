@@ -1,0 +1,20 @@
+{
+	"name": "Create Table",
+	"properties": {
+		"folder": {
+			"name": "SCD Type 2"
+		},
+		"content": {
+			"query": "Drop table staging\nGO\ncreate table staging\n(\n    id int,\n    name varchar(20),\n    country varchar(30),\n    DimensionCheckSum int default -1\n\n)\nwith\n(\n    DISTRIBUTION = HASH ( [id] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\n\ndrop table SCD2\nGO\ncreate table SCD2\n(\n    id int,\n    name varchar(20),\n    country varchar(30),\n    DimensionCheckSum int default -1,\n    ValidFrom datetime,\n    ValidTo date default '12/31/9999',\n    CurrentRecord int default 1\n\n)\nwith\n(\n    DISTRIBUTION = HASH ( [id] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)\n\nGO\ninsert into staging\nvalues (1,'Acme','australia',-1)\ninsert into staging\nvalues (2,'Bikerosoft','US',-1)",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

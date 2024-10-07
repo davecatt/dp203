@@ -1,0 +1,17 @@
+{
+	"name": "Find Identity Seed Value",
+	"properties": {
+		"content": {
+			"query": "SELECT  sm.name\n,       tb.name\n,       co.name\n,       ic.seed_value\n,       ic.increment_value\nFROM        sys.schemas AS sm\nJOIN        sys.tables  AS tb           ON  sm.schema_id = tb.schema_id\nJOIN        sys.columns AS co           ON  tb.object_id = co.object_id\nJOIN        sys.identity_columns AS ic  ON  co.object_id = ic.object_id\n                                        AND co.column_id = ic.column_id\nWHERE   sm.name = 'dbo'\nAND     tb.name = 'DimProduct'",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
