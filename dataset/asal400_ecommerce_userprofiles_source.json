@@ -1,10 +1,6 @@
 {
 	"name": "asal400_ecommerce_userprofiles_source",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "dcdemosynapse-WorkspaceDefaultStorage",
-			"type": "LinkedServiceReference"
-		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
