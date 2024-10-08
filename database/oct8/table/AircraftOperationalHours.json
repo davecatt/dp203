@@ -1,0 +1,114 @@
+{
+	"name": "AircraftOperationalHours",
+	"properties": {
+		"Name": "AircraftOperationalHours",
+		"EntityType": "TABLE",
+		"Namespace": {
+			"DatabaseName": "oct8"
+		},
+		"Description": "The number of operational/flying hours for the associated aircraft.",
+		"TableType": "EXTERNAL",
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"StorageDescriptor": {
+			"Columns": [
+				{
+					"Name": "AircraftId",
+					"Description": "The unique identifier of an Aircraft.",
+					"BaseAttributeReference": {
+						"Entity": "AircraftOperationalHours.cdm.json/AircraftOperationalHours",
+						"Name": "AircraftId"
+					},
+					"OriginDataTypeName": {
+						"TypeName": "integer",
+						"IsComplexType": false,
+						"IsNullable": false,
+						"Properties": {
+							"HIVE_TYPE_STRING": "integer"
+						}
+					},
+					"DeltaFormatInvalidMessages": []
+				},
+				{
+					"Name": "Timestamp",
+					"Description": "The timestamp that the number of operational hours are accurate as of.",
+					"BaseAttributeReference": {
+						"Entity": "AircraftOperationalHours.cdm.json/AircraftOperationalHours",
+						"Name": "Timestamp"
+					},
+					"OriginDataTypeName": {
+						"TypeName": "timestamp",
+						"IsComplexType": false,
+						"IsNullable": false,
+						"Properties": {
+							"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
+							"HIVE_TYPE_STRING": "timestamp"
+						}
+					},
+					"DeltaFormatInvalidMessages": []
+				},
+				{
+					"Name": "NumberFlightHours",
+					"Description": "The number of flight hours of the aircraft as of the associated timestamp.",
+					"BaseAttributeReference": {
+						"Entity": "AircraftOperationalHours.cdm.json/AircraftOperationalHours",
+						"Name": "NumberFlightHours"
+					},
+					"OriginDataTypeName": {
+						"TypeName": "integer",
+						"IsComplexType": false,
+						"IsNullable": true,
+						"Properties": {
+							"HIVE_TYPE_STRING": "integer"
+						}
+					},
+					"DeltaFormatInvalidMessages": []
+				}
+			],
+			"Format": {
+				"InputFormat": "org.apache.hadoop.mapred.SequenceFileInputFormat",
+				"OutputFormat": "org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat",
+				"FormatType": "csv",
+				"SerializeLib": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+				"Properties": {
+					"path": "abfss://synapse@wosdatalakedemo.dfs.core.windows.net/oct8/AircraftOperationalHours",
+					"delimiter": ",",
+					"multiLine": "false",
+					"firstRowAsHeader": "false",
+					"serialization.format": "1",
+					"escape": "\\",
+					"quote": "\"",
+					"FormatTypeSetToDatabaseDefault": true,
+					"header": "false"
+				}
+			},
+			"Source": {
+				"Provider": "ADLS",
+				"Location": "abfss://synapse@wosdatalakedemo.dfs.core.windows.net/oct8/AircraftOperationalHours",
+				"Properties": {
+					"LinkedServiceName": "wossynapse-WorkspaceDefaultStorage",
+					"LocationSetToDatabaseDefault": true
+				}
+			},
+			"Properties": {
+				"textinputformat.record.delimiter": ",",
+				"compression": "",
+				"derivedModelAttributeInfo": "{\"attributeReferences\":{\"AircraftId\":{\"entity\":\"AircraftOperationalHours.cdm.json/AircraftOperationalHours\",\"name\":\"AircraftId\"},\"Timestamp\":{\"entity\":\"AircraftOperationalHours.cdm.json/AircraftOperationalHours\",\"name\":\"Timestamp\"},\"NumberFlightHours\":{\"entity\":\"AircraftOperationalHours.cdm.json/AircraftOperationalHours\",\"name\":\"NumberFlightHours\"}}}"
+			},
+			"Compressed": false,
+			"IsStoredAsSubdirectories": false
+		},
+		"Properties": {
+			"DerivedModelEntityInfo": "{\"entityDirectives\":{\"baseEntityReference\":{\"name\":\"AircraftOperationalHours\",\"path\":\"AircraftOperationalHours.cdm.json/AircraftOperationalHours\"},\"description\":\"The number of operational/flying hours for the associated aircraft.\",\"primaryKey\":[\"AircraftId\",\"Timestamp\"],\"projectionInfo\":{\"attributes\":[{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"AircraftOperationalHours.cdm.json/AircraftOperationalHours\",\"name\":\"AircraftId\"},\"dataType\":\"integer\",\"description\":\"The unique identifier of an Aircraft.\",\"isNullable\":false,\"name\":\"AircraftId\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"AircraftOperationalHours.cdm.json/AircraftOperationalHours\",\"name\":\"Timestamp\"},\"dataType\":\"timestamp\",\"description\":\"The timestamp that the number of operational hours are accurate as of.\",\"isNullable\":false,\"name\":\"Timestamp\",\"timestampFormat\":\"YYYY-MM-DD HH:MM:SS.fffffffff\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"AircraftOperationalHours.cdm.json/AircraftOperationalHours\",\"name\":\"NumberFlightHours\"},\"dataType\":\"integer\",\"description\":\"The number of flight hours of the aircraft as of the associated timestamp.\",\"isNullable\":true,\"name\":\"NumberFlightHours\"}]}}}",
+			"Description": "The number of operational/flying hours for the associated aircraft.",
+			"DisplayFolderInfo": "{\"name\":\"Airlines\",\"colorCode\":\"#00188F\"}",
+			"PrimaryKeys": "AircraftId,Timestamp",
+			"spark.sql.sources.provider": "csv"
+		},
+		"Retention": 0,
+		"Temporary": false,
+		"IsRewriteEnabled": false
+	},
+	"type": "TABLE"
+}

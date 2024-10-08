@@ -1,0 +1,23 @@
+{
+	"name": "relationship-utblpoyeyp",
+	"properties": {
+		"Name": "relationship-utblpoyeyp",
+		"EntityType": "RELATIONSHIP",
+		"Namespace": {
+			"DatabaseName": "oct8"
+		},
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"FromTableName": "AircraftOperationalHours",
+		"ToTableName": "Aircraft",
+		"ColumnRelationshipInformations": [
+			{
+				"FromColumnName": "AircraftId",
+				"ToColumnName": "Aircraft_id"
+			}
+		],
+		"RelationshipType": 0
+	},
+	"type": "RELATIONSHIP"
+}

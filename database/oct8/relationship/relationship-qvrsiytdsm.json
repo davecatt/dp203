@@ -1,0 +1,26 @@
+{
+	"name": "relationship-qvrsiytdsm",
+	"properties": {
+		"Name": "relationship-qvrsiytdsm",
+		"EntityType": "RELATIONSHIP",
+		"Namespace": {
+			"DatabaseName": "oct8"
+		},
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"FromTableName": "AircraftStatusType",
+		"ToTableName": "AircraftStatus",
+		"ColumnRelationshipInformations": [
+			{
+				"FromColumnName": "AircraftStatusTypeId",
+				"ToColumnName": "AircraftStatusTypeId"
+			}
+		],
+		"RelationshipType": 0,
+		"Properties": {
+			"DerivedModelRelationshipInfo": "{\"baseRelationship\":{\"fromEntity\":\"AircraftStatusType.cdm.json/AircraftStatusType\",\"toEntity\":\"AircraftStatus.cdm.json/AircraftStatus\",\"joinPairs\":[{\"fromAttribute\":\"AircraftStatusTypeId\",\"toAttribute\":\"AircraftStatusTypeId\"}]}}"
+		}
+	},
+	"type": "RELATIONSHIP"
+}
