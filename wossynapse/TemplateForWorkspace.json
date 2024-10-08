@@ -805,7 +805,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"content": {
-					"query": "/* Call JSON_QUERY to extract a JSON object or an array. */\n/* Call JSON_VALUE to extract a value from JSON text. */\n/* Call OPENJSON to create a relational view of JSON data. */\n/* Call JSON_MODIFY to update the value of a property in a JSON string. */\n\n--> Read a classic JSON file and returns every document as a seperate row\nselect top 10 *\nfrom openrowset(\n        bulk 'https://dcstoragefordemos.blob.core.windows.net/course-assets/books.json',\n        format = 'csv',\n        fieldterminator ='0x0b',\n        fieldquote = '0x0b',\n        rowterminator = '0x0b' --> You need to override rowterminator to read classic JSON\n    ) with (doc nvarchar(max)) as rows\nGO\n\n--> Read a line-delimited JSON file and retrieve four values\nselect\n    JSON_VALUE(doc, '$.manufacturer') AS Manufacturer,\n    JSON_VALUE(doc, '$.description') AS Item,\n    CAST(JSON_VALUE(doc, '$.price') AS FLOAT) as Price,\n    JSON_VALUE(doc, '$.shipping.weight') as Weight,\n    doc\nfrom openrowset(\n        bulk 'https://dcstoragefordemos.blob.core.windows.net/course-assets/Clothing.jsonl',\n        format = 'csv',\n        fieldterminator ='0x0b',\n        fieldquote = '0x0b'\n    ) with (doc nvarchar(max)) as rows\norder by JSON_VALUE(doc, '$.id') desc\nGO\n\n--> Read a hierarchical classic JSON file and retrieve values from a specific row\nselect\n    JSON_VALUE(doc, '$.Clothing[0].manufacturer') AS Manufacturer,\n    JSON_VALUE(doc, '$.Clothing[0].description') AS Item,\n    CAST(JSON_VALUE(doc, '$.Clothing[0].shipping.weight') AS INT) as Weight,\n    doc\nfrom openrowset(\n        bulk 'https://dcstoragefordemos.blob.core.windows.net/course-assets/Clothing.json',\n        format = 'csv',\n        fieldterminator ='0x0b',\n        fieldquote = '0x0b',\n        rowterminator = '0x0b' --> Override rowterminator\n    ) with (doc nvarchar(max)) as rows\norder by JSON_VALUE(doc, '$.id') desc\n\n/* \n--> Read a hierarchical classic JSON file and retrieve values from all rows\nselect\n    JSON_QUERY(doc, '$.Clothing[0].manufacturer') AS Manufacturer,\n    JSON_QUERY(doc, '$.Clothing.description') AS Item,\n    CAST(JSON_QUERY(doc, '$.Clothing.shipping.weight') AS INT) as Weight\nfrom openrowset(\n        bulk 'https://dcstoragefordemos.blob.core.windows.net/course-assets/Clothing.json',\n        format = 'csv') as data\n        CROSS APPLY OPENJSON(BulkColumn)\n         with (doc nvarchar(max)) as rows\norder by JSON_VALUE(doc, '$.id') desc\n*/",
+					"query": "/* Call JSON_QUERY to extract a JSON object or an array. */\n/* Call JSON_VALUE to extract a value from JSON text. */\n/* Call OPENJSON to create a relational view of JSON data. */\n/* Call JSON_MODIFY to update the value of a property in a JSON string. */\n\n--> Read a classic JSON file and returns every document as a seperate row\nselect top 10 *\nfrom openrowset(\n        bulk 'https://dcstoragedemos.blob.core.windows.net/course-assets/books.json',\n        format = 'csv',\n        fieldterminator ='0x0b',\n        fieldquote = '0x0b',\n        rowterminator = '0x0b' --> You need to override rowterminator to read classic JSON\n    ) with (doc nvarchar(max)) as rows\nGO\n\n--> Read a line-delimited JSON file and retrieve four values\nselect\n    JSON_VALUE(doc, '$.manufacturer') AS Manufacturer,\n    JSON_VALUE(doc, '$.description') AS Item,\n    CAST(JSON_VALUE(doc, '$.price') AS FLOAT) as Price,\n    JSON_VALUE(doc, '$.shipping.weight') as Weight,\n    doc\nfrom openrowset(\n        bulk 'https://dcstoragedemos.blob.core.windows.net/course-assets/Clothing.jsonl',\n        format = 'csv',\n        fieldterminator ='0x0b',\n        fieldquote = '0x0b'\n    ) with (doc nvarchar(max)) as rows\norder by JSON_VALUE(doc, '$.id') desc\nGO\n\n--> Read a hierarchical classic JSON file and retrieve values from a specific row\nselect\n    JSON_VALUE(doc, '$.Clothing[0].manufacturer') AS Manufacturer,\n    JSON_VALUE(doc, '$.Clothing[0].description') AS Item,\n    CAST(JSON_VALUE(doc, '$.Clothing[0].shipping.weight') AS INT) as Weight,\n    doc\nfrom openrowset(\n        bulk 'https://dcstoragedemos.blob.core.windows.net/course-assets/Clothing.json',\n        format = 'csv',\n        fieldterminator ='0x0b',\n        fieldquote = '0x0b',\n        rowterminator = '0x0b' --> Override rowterminator\n    ) with (doc nvarchar(max)) as rows\norder by JSON_VALUE(doc, '$.id') desc\n\n/* \n--> Read a hierarchical classic JSON file and retrieve values from all rows\nselect\n    JSON_QUERY(doc, '$.Clothing[0].manufacturer') AS Manufacturer,\n    JSON_QUERY(doc, '$.Clothing.description') AS Item,\n    CAST(JSON_QUERY(doc, '$.Clothing.shipping.weight') AS INT) as Weight\nfrom openrowset(\n        bulk 'https://dcstoragefordemos.blob.core.windows.net/course-assets/Clothing.json',\n        format = 'csv') as data\n        CROSS APPLY OPENJSON(BulkColumn)\n         with (doc nvarchar(max)) as rows\norder by JSON_VALUE(doc, '$.id') desc\n*/",
 					"metadata": {
 						"language": "sql"
 					},
@@ -7073,6 +7073,747 @@
 			},
 			"dependsOn": [],
 			"location": "uksouth"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/oct8')]",
+			"type": "Microsoft.Synapse/workspaces/databases",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"Ddls": [
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "oct8",
+							"EntityType": "DATABASE",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"Properties": {
+								"IsSyMSCDMDatabase": true,
+								"DerivedModelDBInfo": "{\"ModelDirectives\":{\"BaseModel\":{\"Name\":\"TravelServices\",\"Version\":\"1.3.0\"}}}"
+							},
+							"Source": {
+								"Provider": "ADLS",
+								"Location": "abfss://synapse@wosdatalakedemo.dfs.core.windows.net/oct8",
+								"Properties": {
+									"FormatType": "csv",
+									"LinkedServiceName": "wossynapse-WorkspaceDefaultStorage"
+								}
+							}
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "AircraftOperationalHours",
+							"EntityType": "TABLE",
+							"Namespace": {
+								"DatabaseName": "oct8"
+							},
+							"Description": "The number of operational/flying hours for the associated aircraft.",
+							"TableType": "EXTERNAL",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"StorageDescriptor": {
+								"Columns": [
+									{
+										"Name": "AircraftId",
+										"Description": "The unique identifier of an Aircraft.",
+										"BaseAttributeReference": {
+											"Entity": "AircraftOperationalHours.cdm.json/AircraftOperationalHours",
+											"Name": "AircraftId"
+										},
+										"OriginDataTypeName": {
+											"TypeName": "integer",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Properties": {
+												"HIVE_TYPE_STRING": "integer"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "Timestamp",
+										"Description": "The timestamp that the number of operational hours are accurate as of.",
+										"BaseAttributeReference": {
+											"Entity": "AircraftOperationalHours.cdm.json/AircraftOperationalHours",
+											"Name": "Timestamp"
+										},
+										"OriginDataTypeName": {
+											"TypeName": "timestamp",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Properties": {
+												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
+												"HIVE_TYPE_STRING": "timestamp"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "NumberFlightHours",
+										"Description": "The number of flight hours of the aircraft as of the associated timestamp.",
+										"BaseAttributeReference": {
+											"Entity": "AircraftOperationalHours.cdm.json/AircraftOperationalHours",
+											"Name": "NumberFlightHours"
+										},
+										"OriginDataTypeName": {
+											"TypeName": "integer",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "integer"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									}
+								],
+								"Format": {
+									"InputFormat": "org.apache.hadoop.mapred.SequenceFileInputFormat",
+									"OutputFormat": "org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat",
+									"FormatType": "csv",
+									"SerializeLib": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+									"Properties": {
+										"path": "abfss://synapse@wosdatalakedemo.dfs.core.windows.net/oct8/AircraftOperationalHours",
+										"delimiter": ",",
+										"multiLine": "false",
+										"firstRowAsHeader": "false",
+										"serialization.format": "1",
+										"escape": "\\",
+										"quote": "\"",
+										"FormatTypeSetToDatabaseDefault": true,
+										"header": "false"
+									}
+								},
+								"Source": {
+									"Provider": "ADLS",
+									"Location": "abfss://synapse@wosdatalakedemo.dfs.core.windows.net/oct8/AircraftOperationalHours",
+									"Properties": {
+										"LinkedServiceName": "wossynapse-WorkspaceDefaultStorage",
+										"LocationSetToDatabaseDefault": true
+									}
+								},
+								"Properties": {
+									"textinputformat.record.delimiter": ",",
+									"compression": "",
+									"derivedModelAttributeInfo": "{\"attributeReferences\":{\"AircraftId\":{\"entity\":\"AircraftOperationalHours.cdm.json/AircraftOperationalHours\",\"name\":\"AircraftId\"},\"Timestamp\":{\"entity\":\"AircraftOperationalHours.cdm.json/AircraftOperationalHours\",\"name\":\"Timestamp\"},\"NumberFlightHours\":{\"entity\":\"AircraftOperationalHours.cdm.json/AircraftOperationalHours\",\"name\":\"NumberFlightHours\"}}}"
+								},
+								"Compressed": false,
+								"IsStoredAsSubdirectories": false
+							},
+							"Properties": {
+								"DerivedModelEntityInfo": "{\"entityDirectives\":{\"baseEntityReference\":{\"name\":\"AircraftOperationalHours\",\"path\":\"AircraftOperationalHours.cdm.json/AircraftOperationalHours\"},\"description\":\"The number of operational/flying hours for the associated aircraft.\",\"primaryKey\":[\"AircraftId\",\"Timestamp\"],\"projectionInfo\":{\"attributes\":[{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"AircraftOperationalHours.cdm.json/AircraftOperationalHours\",\"name\":\"AircraftId\"},\"dataType\":\"integer\",\"description\":\"The unique identifier of an Aircraft.\",\"isNullable\":false,\"name\":\"AircraftId\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"AircraftOperationalHours.cdm.json/AircraftOperationalHours\",\"name\":\"Timestamp\"},\"dataType\":\"timestamp\",\"description\":\"The timestamp that the number of operational hours are accurate as of.\",\"isNullable\":false,\"name\":\"Timestamp\",\"timestampFormat\":\"YYYY-MM-DD HH:MM:SS.fffffffff\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"AircraftOperationalHours.cdm.json/AircraftOperationalHours\",\"name\":\"NumberFlightHours\"},\"dataType\":\"integer\",\"description\":\"The number of flight hours of the aircraft as of the associated timestamp.\",\"isNullable\":true,\"name\":\"NumberFlightHours\"}]}}}",
+								"Description": "The number of operational/flying hours for the associated aircraft.",
+								"DisplayFolderInfo": "{\"name\":\"Airlines\",\"colorCode\":\"#00188F\"}",
+								"PrimaryKeys": "AircraftId,Timestamp",
+								"spark.sql.sources.provider": "csv"
+							},
+							"Retention": 0,
+							"Temporary": false,
+							"IsRewriteEnabled": false
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "AircraftStatus",
+							"EntityType": "TABLE",
+							"Namespace": {
+								"DatabaseName": "oct8"
+							},
+							"Description": "The status of the aircraft for the associated period.",
+							"TableType": "EXTERNAL",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"StorageDescriptor": {
+								"Columns": [
+									{
+										"Name": "AircraftId",
+										"Description": "The unique identifier of an Aircraft.",
+										"BaseAttributeReference": {
+											"Entity": "AircraftStatus.cdm.json/AircraftStatus",
+											"Name": "AircraftId"
+										},
+										"OriginDataTypeName": {
+											"TypeName": "integer",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Properties": {
+												"HIVE_TYPE_STRING": "integer"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "PeriodStartTimestamp",
+										"Description": "The period start timestamp that the associated aircraft status is defined.",
+										"BaseAttributeReference": {
+											"Entity": "AircraftStatus.cdm.json/AircraftStatus",
+											"Name": "PeriodStartTimestamp"
+										},
+										"OriginDataTypeName": {
+											"TypeName": "timestamp",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Properties": {
+												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
+												"HIVE_TYPE_STRING": "timestamp"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "AircraftStatusTypeId",
+										"Description": "The unique identifier of an Aircraft Status Type.",
+										"BaseAttributeReference": {
+											"Entity": "AircraftStatus.cdm.json/AircraftStatus",
+											"Name": "AircraftStatusTypeId"
+										},
+										"OriginDataTypeName": {
+											"TypeName": "integer",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"HIVE_TYPE_STRING": "integer"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "PeriodEndTimestamp",
+										"Description": "The period end timestamp that the associated aircraft status is defined.",
+										"BaseAttributeReference": {
+											"Entity": "AircraftStatus.cdm.json/AircraftStatus",
+											"Name": "PeriodEndTimestamp"
+										},
+										"OriginDataTypeName": {
+											"TypeName": "timestamp",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Properties": {
+												"TimestampFormat": "YYYY-MM-DD HH:MM:SS.fffffffff",
+												"HIVE_TYPE_STRING": "timestamp"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "AircraftStatusNote",
+										"Description": "A note, comment or additional information regarding the aircraft status.",
+										"BaseAttributeReference": {
+											"Entity": "AircraftStatus.cdm.json/AircraftStatus",
+											"Name": "AircraftStatusNote"
+										},
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 2048,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "Colour",
+										"Description": "",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									}
+								],
+								"Format": {
+									"InputFormat": "org.apache.hadoop.mapred.SequenceFileInputFormat",
+									"OutputFormat": "org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat",
+									"FormatType": "csv",
+									"SerializeLib": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+									"Properties": {
+										"path": "abfss://synapse@wosdatalakedemo.dfs.core.windows.net/oct8/AircraftStatus",
+										"delimiter": ",",
+										"multiLine": "false",
+										"firstRowAsHeader": "false",
+										"serialization.format": "1",
+										"escape": "\\",
+										"quote": "\"",
+										"FormatTypeSetToDatabaseDefault": true,
+										"header": "false"
+									}
+								},
+								"Source": {
+									"Provider": "ADLS",
+									"Location": "abfss://synapse@wosdatalakedemo.dfs.core.windows.net/oct8/AircraftStatus",
+									"Properties": {
+										"LinkedServiceName": "wossynapse-WorkspaceDefaultStorage",
+										"LocationSetToDatabaseDefault": true
+									}
+								},
+								"Properties": {
+									"textinputformat.record.delimiter": ",",
+									"compression": "",
+									"derivedModelAttributeInfo": "{\"attributeReferences\":{\"AircraftId\":{\"entity\":\"AircraftStatus.cdm.json/AircraftStatus\",\"name\":\"AircraftId\"},\"PeriodStartTimestamp\":{\"entity\":\"AircraftStatus.cdm.json/AircraftStatus\",\"name\":\"PeriodStartTimestamp\"},\"AircraftStatusTypeId\":{\"entity\":\"AircraftStatus.cdm.json/AircraftStatus\",\"name\":\"AircraftStatusTypeId\"},\"PeriodEndTimestamp\":{\"entity\":\"AircraftStatus.cdm.json/AircraftStatus\",\"name\":\"PeriodEndTimestamp\"},\"AircraftStatusNote\":{\"entity\":\"AircraftStatus.cdm.json/AircraftStatus\",\"name\":\"AircraftStatusNote\"}}}"
+								},
+								"Compressed": false,
+								"IsStoredAsSubdirectories": false
+							},
+							"Properties": {
+								"DerivedModelEntityInfo": "{\"entityDirectives\":{\"name\":\"AircraftStatus\",\"description\":\"The status of the aircraft for the associated period.\",\"baseEntityReference\":{\"name\":\"AircraftStatus\",\"path\":\"AircraftStatus.cdm.json/AircraftStatus\"},\"primaryKey\":[\"AircraftId\",\"PeriodStartTimestamp\"],\"projectionInfo\":{\"attributes\":[{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"AircraftStatus.cdm.json/AircraftStatus\",\"name\":\"AircraftId\"},\"dataType\":\"integer\",\"description\":\"The unique identifier of an Aircraft.\",\"isNullable\":false,\"name\":\"AircraftId\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"AircraftStatus.cdm.json/AircraftStatus\",\"name\":\"PeriodStartTimestamp\"},\"dataType\":\"timestamp\",\"description\":\"The period start timestamp that the associated aircraft status is defined.\",\"isNullable\":false,\"name\":\"PeriodStartTimestamp\",\"timestampFormat\":\"YYYY-MM-DD HH:MM:SS.fffffffff\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"AircraftStatus.cdm.json/AircraftStatus\",\"name\":\"AircraftStatusTypeId\"},\"dataType\":\"integer\",\"description\":\"The unique identifier of an Aircraft Status Type.\",\"isNullable\":true,\"name\":\"AircraftStatusTypeId\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"AircraftStatus.cdm.json/AircraftStatus\",\"name\":\"PeriodEndTimestamp\"},\"dataType\":\"timestamp\",\"description\":\"The period end timestamp that the associated aircraft status is defined.\",\"isNullable\":true,\"name\":\"PeriodEndTimestamp\",\"timestampFormat\":\"YYYY-MM-DD HH:MM:SS.fffffffff\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"AircraftStatus.cdm.json/AircraftStatus\",\"name\":\"AircraftStatusNote\"},\"dataType\":\"string\",\"dataTypeLength\":2048,\"description\":\"A note, comment or additional information regarding the aircraft status.\",\"isNullable\":true,\"name\":\"AircraftStatusNote\"},{\"type\":\"New\",\"dataType\":\"string\",\"dataTypeLength\":256,\"description\":\"\",\"isNullable\":false,\"name\":\"Colour\"}]}}}",
+								"Description": "The status of the aircraft for the associated period.",
+								"DisplayFolderInfo": "{\"name\":\"Shipping\",\"colorCode\":\"#961E84\"}",
+								"PrimaryKeys": "AircraftId,PeriodStartTimestamp",
+								"spark.sql.sources.provider": "csv"
+							},
+							"Retention": 0,
+							"Temporary": false,
+							"IsRewriteEnabled": false,
+							"Partitioning": {}
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "AircraftStatusType",
+							"EntityType": "TABLE",
+							"Namespace": {
+								"DatabaseName": "oct8"
+							},
+							"Description": "A status type that may be associated with an aircraft for a period of time.\n\nEx:\n- Operational\n- In maintenance\n- Non-operational",
+							"TableType": "EXTERNAL",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"StorageDescriptor": {
+								"Columns": [
+									{
+										"Name": "AircraftStatusTypeId",
+										"Description": "The unique identifier of an Aircraft Status Type.",
+										"BaseAttributeReference": {
+											"Entity": "AircraftStatusType.cdm.json/AircraftStatusType",
+											"Name": "AircraftStatusTypeId"
+										},
+										"OriginDataTypeName": {
+											"TypeName": "integer",
+											"IsComplexType": false,
+											"IsNullable": false,
+											"Properties": {
+												"HIVE_TYPE_STRING": "integer"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "AircraftStatusTypeName",
+										"Description": "The name of an Aircraft Status Type.",
+										"BaseAttributeReference": {
+											"Entity": "AircraftStatusType.cdm.json/AircraftStatusType",
+											"Name": "AircraftStatusTypeName"
+										},
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "AircraftStatusTypeDescription",
+										"Description": "The description of an Aircraft Status Type.",
+										"BaseAttributeReference": {
+											"Entity": "AircraftStatusType.cdm.json/AircraftStatusType",
+											"Name": "AircraftStatusTypeDescription"
+										},
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 2048,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									}
+								],
+								"Format": {
+									"InputFormat": "org.apache.hadoop.mapred.SequenceFileInputFormat",
+									"OutputFormat": "org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat",
+									"FormatType": "csv",
+									"SerializeLib": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+									"Properties": {
+										"path": "abfss://synapse@wosdatalakedemo.dfs.core.windows.net/oct8/AircraftStatusType",
+										"delimiter": ",",
+										"multiLine": "false",
+										"firstRowAsHeader": "false",
+										"serialization.format": "1",
+										"escape": "\\",
+										"quote": "\"",
+										"FormatTypeSetToDatabaseDefault": true,
+										"header": "false"
+									}
+								},
+								"Source": {
+									"Provider": "ADLS",
+									"Location": "abfss://synapse@wosdatalakedemo.dfs.core.windows.net/oct8/AircraftStatusType",
+									"Properties": {
+										"LinkedServiceName": "wossynapse-WorkspaceDefaultStorage",
+										"LocationSetToDatabaseDefault": true
+									}
+								},
+								"Properties": {
+									"textinputformat.record.delimiter": ",",
+									"compression": "",
+									"derivedModelAttributeInfo": "{\"attributeReferences\":{\"AircraftStatusTypeId\":{\"entity\":\"AircraftStatusType.cdm.json/AircraftStatusType\",\"name\":\"AircraftStatusTypeId\"},\"AircraftStatusTypeName\":{\"entity\":\"AircraftStatusType.cdm.json/AircraftStatusType\",\"name\":\"AircraftStatusTypeName\"},\"AircraftStatusTypeDescription\":{\"entity\":\"AircraftStatusType.cdm.json/AircraftStatusType\",\"name\":\"AircraftStatusTypeDescription\"}}}"
+								},
+								"Compressed": false,
+								"IsStoredAsSubdirectories": false
+							},
+							"Properties": {
+								"DerivedModelEntityInfo": "{\"entityDirectives\":{\"baseEntityReference\":{\"name\":\"AircraftStatusType\",\"path\":\"AircraftStatusType.cdm.json/AircraftStatusType\"},\"description\":\"A status type that may be associated with an aircraft for a period of time.\\n\\nEx:\\n- Operational\\n- In maintenance\\n- Non-operational\",\"primaryKey\":[\"AircraftStatusTypeId\"],\"projectionInfo\":{\"attributes\":[{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"AircraftStatusType.cdm.json/AircraftStatusType\",\"name\":\"AircraftStatusTypeId\"},\"dataType\":\"integer\",\"description\":\"The unique identifier of an Aircraft Status Type.\",\"isNullable\":false,\"name\":\"AircraftStatusTypeId\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"AircraftStatusType.cdm.json/AircraftStatusType\",\"name\":\"AircraftStatusTypeName\"},\"dataType\":\"string\",\"dataTypeLength\":256,\"description\":\"The name of an Aircraft Status Type.\",\"isNullable\":true,\"name\":\"AircraftStatusTypeName\"},{\"type\":\"Existing\",\"attributeReference\":{\"entity\":\"AircraftStatusType.cdm.json/AircraftStatusType\",\"name\":\"AircraftStatusTypeDescription\"},\"dataType\":\"string\",\"dataTypeLength\":2048,\"description\":\"The description of an Aircraft Status Type.\",\"isNullable\":true,\"name\":\"AircraftStatusTypeDescription\"}]}}}",
+								"Description": "A status type that may be associated with an aircraft for a period of time.\n\nEx:\n- Operational\n- In maintenance\n- Non-operational",
+								"DisplayFolderInfo": "{\"name\":\"Shipping\",\"colorCode\":\"#961E84\"}",
+								"PrimaryKeys": "AircraftStatusTypeId",
+								"spark.sql.sources.provider": "csv"
+							},
+							"Retention": 0,
+							"Temporary": false,
+							"IsRewriteEnabled": false
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "Aircraft",
+							"EntityType": "TABLE",
+							"Namespace": {
+								"DatabaseName": "oct8"
+							},
+							"Description": "",
+							"TableType": "EXTERNAL",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"StorageDescriptor": {
+								"Columns": [
+									{
+										"Name": "Aircraft_id",
+										"OriginDataTypeName": {
+											"TypeName": "integer",
+											"IsNullable": false,
+											"IsComplexType": false,
+											"Properties": {
+												"HIVE_TYPE_STRING": "integer"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "Registration",
+										"Description": "",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsNullable": false,
+											"IsComplexType": false,
+											"Length": 256,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									}
+								],
+								"Format": {
+									"InputFormat": "org.apache.hadoop.mapred.SequenceFileInputFormat",
+									"OutputFormat": "org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat",
+									"FormatType": "csv",
+									"SerializeLib": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+									"Properties": {
+										"path": "abfss://synapse@wosdatalakedemo.dfs.core.windows.net/oct8/Aircraft",
+										"delimiter": ",",
+										"multiLine": "false",
+										"firstRowAsHeader": "false",
+										"serialization.format": "1",
+										"escape": "\\",
+										"quote": "\"",
+										"FormatTypeSetToDatabaseDefault": true,
+										"header": "false"
+									}
+								},
+								"Source": {
+									"Provider": "ADLS",
+									"Location": "abfss://synapse@wosdatalakedemo.dfs.core.windows.net/oct8/Aircraft",
+									"Properties": {
+										"LinkedServiceName": "wossynapse-WorkspaceDefaultStorage",
+										"LocationSetToDatabaseDefault": true
+									}
+								},
+								"Properties": {
+									"textinputformat.record.delimiter": ",",
+									"compression": "{\"type\":\"None\",\"level\":\"optimal\"}",
+									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
+								},
+								"Compressed": false,
+								"IsStoredAsSubdirectories": false
+							},
+							"Properties": {
+								"Description": "",
+								"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
+								"PrimaryKeys": "Aircraft_id",
+								"spark.sql.sources.provider": "csv",
+								"sql:IsAppendOnly": false
+							},
+							"Retention": 0,
+							"Temporary": false,
+							"IsRewriteEnabled": false,
+							"Partitioning": {}
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "Customers",
+							"EntityType": "TABLE",
+							"Namespace": {
+								"DatabaseName": "oct8"
+							},
+							"Description": "",
+							"TableType": "EXTERNAL",
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"StorageDescriptor": {
+								"Columns": [
+									{
+										"Name": "C1",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "C2",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "C3",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "C4",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "C5",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "C6",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									},
+									{
+										"Name": "C7",
+										"OriginDataTypeName": {
+											"TypeName": "string",
+											"IsComplexType": false,
+											"IsNullable": true,
+											"Length": 8000,
+											"Properties": {
+												"HIVE_TYPE_STRING": "string"
+											}
+										},
+										"DeltaFormatInvalidMessages": []
+									}
+								],
+								"Format": {
+									"InputFormat": "org.apache.hadoop.mapred.SequenceFileInputFormat",
+									"OutputFormat": "org.apache.hadoop.hive.ql.io.HiveSequenceFileOutputFormat",
+									"FormatType": "csv",
+									"SerializeLib": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+									"Properties": {
+										"path": "abfss://employees@wosdatalakedemo.dfs.core.windows.net/customers.csv",
+										"delimiter": ",",
+										"multiLine": "false",
+										"firstRowAsHeader": "true",
+										"serialization.format": "1",
+										"FormatTypeSetToDatabaseDefault": false,
+										"header": "true"
+									}
+								},
+								"Source": {
+									"Provider": "ADLS",
+									"Location": "abfss://employees@wosdatalakedemo.dfs.core.windows.net/customers.csv",
+									"Properties": {
+										"LinkedServiceName": "WoSDatalake",
+										"LocationSetToDatabaseDefault": false
+									}
+								},
+								"Properties": {
+									"textinputformat.record.delimiter": ",",
+									"compression": "",
+									"derivedModelAttributeInfo": "{\"attributeReferences\":{}}"
+								},
+								"Compressed": false,
+								"IsStoredAsSubdirectories": false
+							},
+							"Properties": {
+								"Description": "",
+								"DisplayFolderInfo": "{\"name\":\"Others\",\"colorCode\":\"\"}",
+								"PrimaryKeys": "",
+								"spark.sql.sources.provider": "csv"
+							},
+							"Retention": 0,
+							"Temporary": false,
+							"IsRewriteEnabled": false,
+							"Partitioning": {}
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "relationship-qvrsiytdsm",
+							"EntityType": "RELATIONSHIP",
+							"Namespace": {
+								"DatabaseName": "oct8"
+							},
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"FromTableName": "AircraftStatusType",
+							"ToTableName": "AircraftStatus",
+							"ColumnRelationshipInformations": [
+								{
+									"FromColumnName": "AircraftStatusTypeId",
+									"ToColumnName": "AircraftStatusTypeId"
+								}
+							],
+							"RelationshipType": 0,
+							"Properties": {
+								"DerivedModelRelationshipInfo": "{\"baseRelationship\":{\"fromEntity\":\"AircraftStatusType.cdm.json/AircraftStatusType\",\"toEntity\":\"AircraftStatus.cdm.json/AircraftStatus\",\"joinPairs\":[{\"fromAttribute\":\"AircraftStatusTypeId\",\"toAttribute\":\"AircraftStatusTypeId\"}]}}"
+							}
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					},
+					{
+						"ActionType": "CREATE",
+						"OldEntity": null,
+						"NewEntity": {
+							"Name": "relationship-utblpoyeyp",
+							"EntityType": "RELATIONSHIP",
+							"Namespace": {
+								"DatabaseName": "oct8"
+							},
+							"Origin": {
+								"Type": "SPARK"
+							},
+							"FromTableName": "AircraftOperationalHours",
+							"ToTableName": "Aircraft",
+							"ColumnRelationshipInformations": [
+								{
+									"FromColumnName": "AircraftId",
+									"ToColumnName": "Aircraft_id"
+								}
+							],
+							"RelationshipType": 0,
+							"Properties": {}
+						},
+						"Source": {
+							"Type": "SPARK"
+						}
+					}
+				]
+			},
+			"dependsOn": []
 		}
 	]
 }
