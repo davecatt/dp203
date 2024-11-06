@@ -1,0 +1,40 @@
+{
+	"name": "Call Databricks Notebook",
+	"properties": {
+		"activities": [
+			{
+				"name": "Notebook1",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/davecatt@imageframe.co.uk/MyFirstNotebook",
+					"baseParameters": {
+						"input": {
+							"value": "@pipeline().parameters.Department",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "WoSDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"Department": {
+				"type": "string",
+				"defaultValue": "HR"
+			}
+		},
+		"annotations": []
+	}
+}
