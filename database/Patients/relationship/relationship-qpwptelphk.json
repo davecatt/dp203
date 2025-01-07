@@ -1,0 +1,23 @@
+{
+	"name": "relationship-qpwptelphk",
+	"properties": {
+		"Name": "relationship-qpwptelphk",
+		"EntityType": "RELATIONSHIP",
+		"Namespace": {
+			"DatabaseName": "Patients"
+		},
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"FromTableName": "Patients",
+		"ToTableName": "PatientActivity",
+		"ColumnRelationshipInformations": [
+			{
+				"FromColumnName": "PatientID",
+				"ToColumnName": "PatientId"
+			}
+		],
+		"RelationshipType": 0
+	},
+	"type": "RELATIONSHIP"
+}

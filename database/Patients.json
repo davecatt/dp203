@@ -1,0 +1,23 @@
+{
+	"name": "Patients",
+	"properties": {
+		"Name": "Patients",
+		"EntityType": "DATABASE",
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"Properties": {
+			"IsSyMSCDMDatabase": true,
+			"DerivedModelDBInfo": "{\"ModelDirectives\":{\"BaseModel\":{\"Name\":\"HealthcareProviders\",\"Version\":\"1.3.0\"}}}"
+		},
+		"Source": {
+			"Provider": "ADLS",
+			"Location": "abfss://patients@wosdatalakedemo.dfs.core.windows.net/",
+			"Properties": {
+				"FormatType": "parquet",
+				"LinkedServiceName": "WoSDatalake"
+			}
+		}
+	},
+	"type": "DATABASE"
+}
