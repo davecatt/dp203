@@ -1,0 +1,23 @@
+{
+	"name": "relationship-bddiklpjzt",
+	"properties": {
+		"Name": "relationship-bddiklpjzt",
+		"EntityType": "RELATIONSHIP",
+		"Namespace": {
+			"DatabaseName": "Patients"
+		},
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"FromTableName": "Patients",
+		"ToTableName": "Addresses",
+		"ColumnRelationshipInformations": [
+			{
+				"FromColumnName": "PatientID",
+				"ToColumnName": "CustomerID"
+			}
+		],
+		"RelationshipType": 0
+	},
+	"type": "RELATIONSHIP"
+}

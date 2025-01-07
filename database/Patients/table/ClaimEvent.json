@@ -16,10 +16,6 @@
 				{
 					"Name": "ClaimId",
 					"Description": "The unique identifier of a Claim.",
-					"BaseAttributeReference": {
-						"Entity": "ClaimEvent.cdm.json/ClaimEvent",
-						"Name": "ClaimId"
-					},
 					"OriginDataTypeName": {
 						"TypeName": "long",
 						"IsComplexType": false,
@@ -28,15 +24,15 @@
 							"HIVE_TYPE_STRING": "long"
 						}
 					},
+					"BaseAttributeReference": {
+						"Entity": "ClaimEvent.cdm.json/ClaimEvent",
+						"Name": "ClaimId"
+					},
 					"DeltaFormatInvalidMessages": []
 				},
 				{
 					"Name": "ClaimEventTypeId",
 					"Description": "The unique identifier of a Transaction Event Type.",
-					"BaseAttributeReference": {
-						"Entity": "ClaimEvent.cdm.json/ClaimEvent",
-						"Name": "ClaimEventTypeId"
-					},
 					"OriginDataTypeName": {
 						"TypeName": "integer",
 						"IsComplexType": false,
@@ -45,15 +41,15 @@
 							"HIVE_TYPE_STRING": "integer"
 						}
 					},
+					"BaseAttributeReference": {
+						"Entity": "ClaimEvent.cdm.json/ClaimEvent",
+						"Name": "ClaimEventTypeId"
+					},
 					"DeltaFormatInvalidMessages": []
 				},
 				{
 					"Name": "ClaimEventTimestamp",
 					"Description": "The timestamp that the event was executed in conjunction with the Transaction.",
-					"BaseAttributeReference": {
-						"Entity": "ClaimEvent.cdm.json/ClaimEvent",
-						"Name": "ClaimEventTimestamp"
-					},
 					"OriginDataTypeName": {
 						"TypeName": "timestamp",
 						"IsComplexType": false,
@@ -63,15 +59,15 @@
 							"HIVE_TYPE_STRING": "timestamp"
 						}
 					},
+					"BaseAttributeReference": {
+						"Entity": "ClaimEvent.cdm.json/ClaimEvent",
+						"Name": "ClaimEventTimestamp"
+					},
 					"DeltaFormatInvalidMessages": []
 				},
 				{
 					"Name": "ClaimEventNote",
 					"Description": "A note, comment or additional information regarding the claim event.",
-					"BaseAttributeReference": {
-						"Entity": "ClaimEvent.cdm.json/ClaimEvent",
-						"Name": "ClaimEventNote"
-					},
 					"OriginDataTypeName": {
 						"TypeName": "string",
 						"IsComplexType": false,
@@ -80,6 +76,10 @@
 						"Properties": {
 							"HIVE_TYPE_STRING": "string"
 						}
+					},
+					"BaseAttributeReference": {
+						"Entity": "ClaimEvent.cdm.json/ClaimEvent",
+						"Name": "ClaimEventNote"
 					},
 					"DeltaFormatInvalidMessages": []
 				}
@@ -115,8 +115,7 @@
 			"Description": "The event(s) associated with a Claim.",
 			"DisplayFolderInfo": "{\"name\":\"Claim\",\"colorCode\":\"#4B003F\"}",
 			"PrimaryKeys": "ClaimId,ClaimEventTypeId,ClaimEventTimestamp",
-			"spark.sql.sources.provider": "parquet",
-			"sql:IsAppendOnly": false
+			"spark.sql.sources.provider": "parquet"
 		},
 		"Retention": 0,
 		"Temporary": false,

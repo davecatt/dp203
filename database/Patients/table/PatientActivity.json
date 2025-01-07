@@ -16,10 +16,6 @@
 				{
 					"Name": "PatientId",
 					"Description": "The unique identifier of a Patient.",
-					"BaseAttributeReference": {
-						"Entity": "PatientActivity.cdm.json/PatientActivity",
-						"Name": "PatientId"
-					},
 					"OriginDataTypeName": {
 						"TypeName": "string",
 						"IsComplexType": false,
@@ -29,15 +25,15 @@
 							"HIVE_TYPE_STRING": "string"
 						}
 					},
+					"BaseAttributeReference": {
+						"Entity": "PatientActivity.cdm.json/PatientActivity",
+						"Name": "PatientId"
+					},
 					"DeltaFormatInvalidMessages": []
 				},
 				{
 					"Name": "ActivityId",
 					"Description": "The unique identifier of an Activity.",
-					"BaseAttributeReference": {
-						"Entity": "PatientActivity.cdm.json/PatientActivity",
-						"Name": "ActivityId"
-					},
 					"OriginDataTypeName": {
 						"TypeName": "integer",
 						"IsComplexType": false,
@@ -46,15 +42,15 @@
 							"HIVE_TYPE_STRING": "integer"
 						}
 					},
+					"BaseAttributeReference": {
+						"Entity": "PatientActivity.cdm.json/PatientActivity",
+						"Name": "ActivityId"
+					},
 					"DeltaFormatInvalidMessages": []
 				},
 				{
 					"Name": "Date",
 					"Description": "The timestamp that the associated information is reported, recorded or effective as-of.",
-					"BaseAttributeReference": {
-						"Entity": "PatientActivity.cdm.json/PatientActivity",
-						"Name": "Date"
-					},
 					"OriginDataTypeName": {
 						"TypeName": "date",
 						"IsComplexType": false,
@@ -64,15 +60,15 @@
 							"HIVE_TYPE_STRING": "date"
 						}
 					},
+					"BaseAttributeReference": {
+						"Entity": "PatientActivity.cdm.json/PatientActivity",
+						"Name": "Date"
+					},
 					"DeltaFormatInvalidMessages": []
 				},
 				{
 					"Name": "ServiceProviderId",
 					"Description": "The unique identifier of a Service Provider.",
-					"BaseAttributeReference": {
-						"Entity": "PatientActivity.cdm.json/PatientActivity",
-						"Name": "ServiceProviderId"
-					},
 					"OriginDataTypeName": {
 						"TypeName": "integer",
 						"IsComplexType": false,
@@ -81,6 +77,10 @@
 							"HIVE_TYPE_STRING": "integer"
 						}
 					},
+					"BaseAttributeReference": {
+						"Entity": "PatientActivity.cdm.json/PatientActivity",
+						"Name": "ServiceProviderId"
+					},
 					"DeltaFormatInvalidMessages": []
 				},
 				{
@@ -88,8 +88,8 @@
 					"Description": "",
 					"OriginDataTypeName": {
 						"TypeName": "long",
-						"IsNullable": false,
 						"IsComplexType": false,
+						"IsNullable": false,
 						"Properties": {
 							"HIVE_TYPE_STRING": "long"
 						}
@@ -128,8 +128,7 @@
 			"Description": "The Activity(s) that a specific Patient has acknowledged was identified or recorded as of the indicated date.\n\nActivities, Interests and Opinions are the foundation of Psychographics and Psychographic Segmentation.     Activities, Interests and Opinions equate to 'lifestyle'.    Activities, Interests and Opinions (AIO) are the basis for understanding consumer buying behavior as a function of their lifestyle.\n\nActivities describe what a consumer 'does', such as occupation, hobbies, entertainment.\n\nEach organization will identify, define and track a specific set of AIO's to gather information about, define consumers and make decisions. \n\nEx:\nActivity =  \"Cooking\"\nActivity Type = \"Personal Interest\"\n\nActivity =  \"Golf\"\nActivity Type = \"Personal Sports\n\nActivity =  \"Mutual Fund Investing\"\nActivity Type = \"Finance\"\n\nSales, marketing and advertising activities are often planned for or targeted at groups involved in or interested in specific activities.",
 			"DisplayFolderInfo": "{\"name\":\"Patient\",\"colorCode\":\"#BD4B37\"}",
 			"PrimaryKeys": "PatientId,ActivityId,Date,ServiceProviderId",
-			"spark.sql.sources.provider": "parquet",
-			"sql:IsAppendOnly": false
+			"spark.sql.sources.provider": "parquet"
 		},
 		"Retention": 0,
 		"Temporary": false,
