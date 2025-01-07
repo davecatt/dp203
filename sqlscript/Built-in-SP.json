@@ -1,0 +1,17 @@
+{
+	"name": "Built-in-SP",
+	"properties": {
+		"content": {
+			"query": " USE jan7;\n GO;\n CREATE PROCEDURE sp_GetYearlySales\n AS\n BEGIN\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://dcstoragedemos.blob.core.windows.net/crimedata/**',\n        FORMAT = 'CSV',\n        PARSER_VERSION='2.0',\n        HEADER_ROW=true\n    ) AS [result]\n\n END",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "jan7",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
