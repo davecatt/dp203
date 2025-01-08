@@ -1,0 +1,490 @@
+{
+	"name": "Delta Lake Time Travel",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "Sparkpool1",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "8dba180a-5249-410a-9538-4b302a89ca90"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/9d8c415c-5e10-40bd-b737-322e061f990c/resourceGroups/DemoResources/providers/Microsoft.Synapse/workspaces/wossynapse/bigDataPools/Sparkpool1",
+				"name": "Sparkpool1",
+				"type": "Spark",
+				"endpoint": "https://wossynapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/Sparkpool1",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.4",
+				"nodeCount": 10,
+				"cores": 8,
+				"memory": 56,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Using the history feature of Delta Lake Tables (time-travel queries)\n",
+					""
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"outputs_hidden": false,
+						"source_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"## set up SAS token for blob container\n",
+					"spark.conf.set(\n",
+					"\"fs.azure.sas.oh004.dcstoragedemos.blob.core.windows.net\",\n",
+					"\"sp=r&st=2025-01-07T07:14:31Z&se=2025-01-09T15:14:31Z&skoid=396a304f-19ac-4f97-9645-71405975579a&sktid=4a87d764-6ade-4986-a42f-45d48421e7df&skt=2025-01-07T07:14:31Z&ske=2025-01-09T15:14:31Z&sks=b&skv=2022-11-02&spr=https&sv=2022-11-02&sr=c&sig=wgs2VO4CSXZFDsj7J6zAzqhEAS4C0lS%2F%2FCn%2BYo9dMVE%3D\"\n",
+					")"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"outputs_hidden": false,
+						"source_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Read data\n",
+					"customers_df = spark.read.format('csv').option('header', True).load(\"wasbs://oh004@dcstoragedemos.blob.core.windows.net/customers.csv\")\n",
+					"customers_df=customers_df.drop(\"CreatedDate\",\"UpdatedDate\",\"Source\")\n",
+					"customers_df.limit(5).show()"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"outputs_hidden": false,
+						"source_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# create a managed delta table from the dataframe\n",
+					"\n",
+					"customers_df.write.format(\"delta\").mode('overwrite').saveAsTable('CustomersDelta')\n",
+					"\n",
+					"# we could also write the dataframe out to delta format\n",
+					"#customers_df.write.mode(\"overwrite\").format(\"delta\").save(\"files/data/CustomersDelta\")"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"application/vnd.databricks.v1+cell": {
+						"cellMetadata": {
+							"byteLimit": 2048000,
+							"implicitDf": true,
+							"rowLimit": 10000
+						},
+						"nuid": "cbc5bde9-a4c3-45be-bd6a-eec0bc705d1d",
+						"showTitle": false,
+						"title": ""
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"\n",
+					"SELECT count(*) FROM CustomersDelta"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"application/vnd.databricks.v1+cell": {
+						"nuid": "87d4dfa9-5120-433a-9e04-2842385afd7b",
+						"showTitle": false,
+						"title": ""
+					}
+				},
+				"source": [
+					"# Append new records to the Delta Lake files"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"application/vnd.databricks.v1+cell": {
+						"cellMetadata": {
+							"byteLimit": 2048000,
+							"rowLimit": 10000
+						},
+						"nuid": "28fefe1e-c46b-43a4-8749-6faadcbe24e5",
+						"showTitle": false,
+						"title": ""
+					},
+					"collapsed": false
+				},
+				"source": [
+					"## Create new customer records\n",
+					"from pyspark.sql.types import *\n",
+					"from pyspark.sql.functions import *\n",
+					"\n",
+					"peopleSchema = StructType([\n",
+					"     StructField(\"CustomerID\", StringType()),\n",
+					"     StructField(\"LastName\", StringType()),\n",
+					"     StructField(\"FirstName\", StringType()),\n",
+					"     StructField(\"PhoneNumber\", StringType()),\n",
+					"     ])\n",
+					"\n",
+					"\n",
+					"new_customers = spark.createDataFrame(\n",
+					"    [\n",
+					"  ('367D2E51-D127-43C1-9E1E-548169144CBA', 'Trishna','Tomas', '953-38-9452'),\n",
+					"  ('16DD2E51-D127-43C1-9E1E-548169144CBA', 'Bartolomej','Sadiq', '906-51-2137'),\n",
+					"  ('0FED2E51-D127-43C1-9E1E-548169144CBA', 'Ester','Amber', '988-61-6247'),\n",
+					"  ('8CCD2E51-D127-43C1-9E1E-548169144CBA', 'Ophir', 'Melania', '345-67-8901'),\n",
+					"  ('ED4D2E51-D127-43C1-9E1E-548169144CBA', 'Yehoshua','Kirsti', '456-78-9012'),\n",
+					"  ('D2234E51-D127-43C1-9E1E-548169144CBA', 'Theophilus','Mikael', '567-89-0123')\n",
+					"    ], peopleSchema\n",
+					")\n",
+					"\n",
+					"\n",
+					"new_customers.show()"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"application/vnd.databricks.v1+cell": {
+						"cellMetadata": {
+							"byteLimit": 2048000,
+							"rowLimit": 10000
+						},
+						"nuid": "6e038df1-16c5-4791-be25-05249e5718f9",
+						"showTitle": false,
+						"title": ""
+					}
+				},
+				"source": [
+					"## Append the six new customer records\n",
+					"new_customers.write.format(\"delta\").mode('append').saveAsTable('CustomersDelta')\n",
+					"\n",
+					"\n",
+					"## If we had written to a delta file, we could append the new records\n",
+					"## To atomically add new data to an existing Delta table, use append mode\n",
+					"## df.write.format(\"delta\").mode(\"append\").save(DataPath)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"application/vnd.databricks.v1+cell": {
+						"nuid": "0291ba2c-cd50-415f-9ac4-dd0ef590a626",
+						"showTitle": false,
+						"title": ""
+					}
+				},
+				"source": [
+					"# Update existing table (insert 3 new records and update 3 existing records)"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"application/vnd.databricks.v1+cell": {
+						"cellMetadata": {
+							"byteLimit": 2048000,
+							"implicitDf": true,
+							"rowLimit": 10000
+						},
+						"nuid": "7d7177ba-8597-42eb-a90d-93913f227000",
+						"showTitle": false,
+						"title": ""
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"-- create new records and also update some existing records\n",
+					"-- Then merge changes into the delta table\n",
+					"\n",
+					"CREATE OR REPLACE TEMP VIEW customer_updates (\n",
+					"  CustomerID, LastName, FirstName, PhoneNumber\n",
+					") AS VALUES\n",
+					"  ('BDB92A16-B428-4779-8DF3-5BAC45247DF2', 'Luppitt','Billy', '953-38-9452'),\n",
+					"  ('47B9E9AF-76BC-488A-ACA2-627D30C19ADE', 'Leadbetter','Elias', '906-51-2137'),\n",
+					"  ('A64392E4-9E16-463A-A9E5-91917F304056', 'Broggio','Joshua',  '988-61-6247'),\n",
+					"  ('BDB92A16-B428-4779-8DF3-5BA567247DF2', 'Doe','John',  '345-67-8901'),\n",
+					"  ('BDB92A16-B428-4779-8DF3-5BAC45437DF2', 'Smith','Mary', '456-78-9012'),\n",
+					"  ('BDB92A16-B428-4779-8DF3-5BAC45247DDD', 'Smith','Jane', '567-89-0123');\n",
+					"\n",
+					"MERGE INTO CustomersDelta\n",
+					"USING customer_updates\n",
+					"ON CustomersDelta.CustomerID = customer_updates.CustomerID\n",
+					"WHEN MATCHED THEN UPDATE SET *\n",
+					"WHEN NOT MATCHED THEN INSERT *;"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"application/vnd.databricks.v1+cell": {
+						"nuid": "6ef359b5-dbc6-45ab-8c10-5790613325fc",
+						"showTitle": false,
+						"title": ""
+					}
+				},
+				"source": [
+					"# You access data in Delta tables by the table name or the table path via SQL or Python"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"application/vnd.databricks.v1+cell": {
+						"cellMetadata": {
+							"byteLimit": 2048000,
+							"implicitDf": true,
+							"rowLimit": 10000
+						},
+						"nuid": "355ea0f6-35f0-4f38-b51f-5d4686ce7242",
+						"showTitle": false,
+						"title": ""
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"\n",
+					"SELECT * FROM CustomersDelta WHERE CustomerID = 'BDB92A16-B428-4779-8DF3-5BAC45247DF2'"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"application/vnd.databricks.v1+cell": {
+						"cellMetadata": {
+							"byteLimit": 2048000,
+							"rowLimit": 10000
+						},
+						"nuid": "48f571da-3cc3-4b79-bd9d-3b30983fc104",
+						"showTitle": false,
+						"title": ""
+					},
+					"collapsed": false
+				},
+				"source": [
+					"people_df = spark.read.table(\"CustomersDelta\")\n",
+					"\n",
+					"people_df.limit(5).show()"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"application/vnd.databricks.v1+cell": {
+						"cellMetadata": {
+							"byteLimit": 2048000,
+							"implicitDf": true,
+							"rowLimit": 10000
+						},
+						"nuid": "01f800a1-698b-4770-b8e7-74f8806c4cdf",
+						"showTitle": false,
+						"title": ""
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"\n",
+					"DESCRIBE HISTORY CustomersDelta"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"application/vnd.databricks.v1+cell": {
+						"cellMetadata": {
+							"byteLimit": 2048000,
+							"implicitDf": true,
+							"rowLimit": 10000
+						},
+						"nuid": "33df4baa-0ad8-441e-9c25-218a6de1e97a",
+						"showTitle": false,
+						"title": ""
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"\n",
+					"SELECT count(*) FROM CustomersDelta VERSION AS OF 0"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Delete a record from the table\n",
+					"\n",
+					"Deletion of records is supported but schema modifications are limited in Fabric.\n",
+					"\n",
+					"You can clone a table as of a specific timestamp instead."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"outputs_hidden": false,
+						"source_hidden": false
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"-- delete certain rows from the table (this will delete two rows)\n",
+					"-- then run a select to show the record has gone\n",
+					"\n",
+					"DELETE FROM CustomersDelta WHERE FirstName = 'Billy';\n",
+					"\n",
+					"SELECT * FROM CustomersDelta WHERE CustomerID = 'BDB92A16-B428-4779-8DF3-5BAC45247DF2'"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"outputs_hidden": false,
+						"source_hidden": false
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"-- now run a query from the previous version\n",
+					"\n",
+					"SELECT * FROM CustomersDelta VERSION AS OF 2 WHERE CustomerID = 'BDB92A16-B428-4779-8DF3-5BAC45247DF2'"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"application/vnd.databricks.v1+cell": {
+						"cellMetadata": {
+							"byteLimit": 2048000,
+							"rowLimit": 10000
+						},
+						"nuid": "8a586bda-1209-4b0e-b126-3fd182e8fd64",
+						"showTitle": false,
+						"title": ""
+					}
+				},
+				"source": [
+					"spark.sql(\"DROP TABLE IF EXISTS CustomersDelta\")"
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
