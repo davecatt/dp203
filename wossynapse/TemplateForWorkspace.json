@@ -343,6 +343,10 @@
 								}
 							},
 							"snapshot": true,
+							"sparkPool": {
+								"referenceName": "Sparkpool1",
+								"type": "BigDataPoolReference"
+							},
 							"conf": {
 								"spark.dynamicAllocation.enabled": null,
 								"spark.dynamicAllocation.minExecutors": null,
@@ -364,7 +368,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/notebooks/Spark Transform lab 11')]"
+				"[concat(variables('workspaceId'), '/notebooks/Spark Transform lab 11')]",
+				"[concat(variables('workspaceId'), '/bigDataPools/Sparkpool1')]"
 			]
 		},
 		{
