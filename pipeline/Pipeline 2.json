@@ -3,8 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Notebook1",
-				"type": "DatabricksNotebook",
+				"name": "Notebook2",
+				"type": "SynapseNotebook",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -15,17 +15,20 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/davecatt@imageframe.co.uk/MyFirstNotebook",
-					"baseParameters": {
-						"input": {
-							"value": "@pipeline().parameters.Dept",
-							"type": "Expression"
+					"notebook": {
+						"referenceName": "Spark Transform lab 11",
+						"type": "NotebookReference"
+					},
+					"parameters": {
+						"folderName": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "string"
 						}
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "WoSDatabricks",
-					"type": "LinkedServiceReference"
+					},
+					"snapshot": true
 				}
 			}
 		],
